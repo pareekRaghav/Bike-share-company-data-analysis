@@ -1,4 +1,11 @@
--- Combined all 6 months datasets into a single dataset for comprehensive analysis 
+/* Hi there,
+	I enrolled into the Google's data analytics certificate and as a part of it's capstone project I worked on a case study of a bike sharing company.
+	I used trip data of first 6 months of 2023 to identify patterns and trends that seperated casual riders from member riders. This analysis was then used
+	to create marketing campaign to target casual riders and convert them into member riders.
+*/
+
+
+--I imported data for first 6 months into PostgreSQL and then combined all 6 months datasets into a single dataset for comprehensive analysis 
 create table complete_trip_data_2023 as(
 	select * from trip_data_202301
 	union
@@ -14,11 +21,13 @@ create table complete_trip_data_2023 as(
 )
 
 --Checking first 100 rows of the new table
+	
 select * from complete_trip_data_2023
 order by started_at
 limit 100;
 
 --Creating a view with a new column of start date weekday
+
 create view start_weekday_trip_data as
 (select 
 	ride_id, rideable_type, to_char(started_at, 'Day') as start_weekday, member_casual 
@@ -26,6 +35,7 @@ from
 	complete_trip_data_2023)
 
 --Which day of the week do casual riders take the most trips
+	
 select 
 	start_weekday, count(start_weekday) as number_of_trips
 from 
@@ -35,6 +45,7 @@ group by start_weekday
 order by number_of_trips
 
 --Which day of the week do member riders take the most trips
+	
 select 
 	start_weekday, count(start_weekday) as number_of_trips
 from 
@@ -44,6 +55,7 @@ group by start_weekday
 order by number_of_trips
 
 --Which rideable_type do casual riders prefer the most
+	
 select 
 	rideable_type, count(member_casual) as number_of_trips
 from 
@@ -53,6 +65,7 @@ group by rideable_type
 order by number_of_trips
 
 --Which rideable_type do member riders prefer the most
+	
 select 
 	rideable_type, count(member_casual) as number_of_trips
 from 
@@ -62,6 +75,7 @@ group by rideable_type
 order by number_of_trips
 
 --Total trips done by member and casual riders
+	
 select 
 	member_casual, count(member_casual) as num_of_trips, 
 	sum(count(member_casual))over() as total_trips,
@@ -73,6 +87,7 @@ group by member_casual;
 select * from complete_trip_data_2023 limit 100;
 
 --Average duration of trips taken by riders
+
 select 
 	member_casual, to_char(avg(ended_at-started_at),'MI:SS') as Average_trip_duration
 from 
